@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"net/url"
+	"strings"
 	"time"
 
 	hawk "github.com/tent/hawk-go"
@@ -38,10 +40,21 @@ func main() {
 			if auth.Nonce == "" {
 				setNonce()
 			}
+			url, _ := url.Parse(auth.RequestURI)
+			hostParsed := strings.Split(url.Host, ":")
+			auth.Host = hostParsed[0]
+			auth.RequestURI = url.Path
 			auth.Credentials.Hash = sha256.New
 			auth.Timestamp = hawk.Now().Add(10 * time.Second)
-			auth.Host = "123123"
-			auth.Port = "443"
+			if len(hostParsed) > 1 {
+				auth.Port = hostParsed[1]
+			} else {
+				if url.Scheme == "https" {
+					auth.Port = "443"
+				} else {
+					auth.Port = "80"
+				}
+			}
 			fmt.Println(auth.RequestHeader())
 		},
 	}
