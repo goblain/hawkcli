@@ -47,7 +47,11 @@ func main() {
 			url, _ := url.Parse(auth.RequestURI)
 			hostParsed := strings.Split(url.Host, ":")
 			auth.Host = hostParsed[0]
-			auth.RequestURI = url.Path
+			query := ""
+			if url.RawQuery != "" {
+				query = "/" + url.RawQuery
+			}
+			auth.RequestURI = url.Path + query
 			auth.Credentials.Hash = sha256.New
 			auth.Timestamp = hawk.Now().Add(10 * time.Second)
 			if len(hostParsed) > 1 {
@@ -87,7 +91,11 @@ func main() {
 			}
 			hostParsed := strings.Split(url.Host, ":")
 			auth.Host = hostParsed[0]
-			auth.RequestURI = url.Path
+			query := ""
+			if url.RawQuery != "" {
+				query = "/" + url.RawQuery
+			}
+			auth.RequestURI = url.Path + query
 			auth.Credentials.Hash = sha256.New
 			auth.Timestamp = hawk.Now().Add(10 * time.Second)
 
