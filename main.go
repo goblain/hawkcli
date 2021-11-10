@@ -49,7 +49,7 @@ func main() {
 			auth.Host = hostParsed[0]
 			query := ""
 			if url.RawQuery != "" {
-				query = "/" + url.RawQuery
+				query = "?" + url.RawQuery
 			}
 			auth.RequestURI = url.Path + query
 			auth.Credentials.Hash = sha256.New
@@ -93,9 +93,10 @@ func main() {
 			auth.Host = hostParsed[0]
 			query := ""
 			if url.RawQuery != "" {
-				query = "/" + url.RawQuery
+				query = "?" + url.RawQuery
 			}
 			auth.RequestURI = url.Path + query
+			fmt.Println(auth.RequestURI)
 			auth.Credentials.Hash = sha256.New
 			auth.Timestamp = hawk.Now().Add(10 * time.Second)
 
